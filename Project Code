@@ -1,0 +1,95 @@
+# --- Pipeline Projects High Level Schedule --- 
+
+
+#To import the plotting library for charts
+import matplotlib.pyplot as plt
+# Math function to be used for rounding up days
+import math 
+
+#Define the schedule parameters
+def estimate_pipeline_schedule(pipeline_length_km, pipe_size_inch, 
+                               road_crossings, civil_supports, tie_ins, shutdowns):
+    # --- Pipeline installation rate ---
+    if pipe_size_inch <= 10:
+        install_rate = 0.044
+    elif pipe_size_inch <= 20:
+        install_rate = 0.022
+    else:
+        install_rate = 0.010
+
+    #Formulas and Calculations for the parameters
+    pipeline_days = pipeline_length_km / install_rate
+    road_days = road_crossings * 2
+    support_days = civil_supports * 0.5
+    #Consider curing and excavation for supports (future)
+    tie_in_days = tie_ins * 1
+    shutdown_days= shutdowns * 2
+    mobilization_days = 1
+    #Consider materials collection (future)
+
+# list to store all project tasks
+    activities = []
+# tracks the running timeline
+    current_day = 0
+    
+# To add tasks into the schedule & update days 
+    def add_activity(name, duration):
+        nonlocal current_day
+        start = current_day
+        end = current_day + duration
+        activities.append((name, start, end, duration))
+        current_day = end
+
+# To add tasks sequentially to the timeline
+    add_activity("Mobilization/Demobilization", mobilization_days)
+# Ensures pipeline installation duration is always rounded up to whole days
+    add_activity("Pipeline installation", math.ceil(pipeline_days))
+    add_activity("Road crossings", road_days)
+    add_activity("Civil supports", support_days)
+    add_activity("Tie-ins", tie_in_days)
+    add_activity("Shutdowns", shutdown_days)
+
+    total_days = current_day
+    return math.ceil(total_days), activities
+
+# For Gantt Chart option ------ 
+
+"""
+def plot_gantt_chart(activities, total_days):
+    fig, ax = plt.subplots(figsize=(10, 5))
+    for i, (name, start, end, duration) in enumerate(activities):
+        ax.barh(i, duration, left=start, height=0.4, align="center")
+        ax.text(start + duration/2, i, f"{duration:.1f} d", 
+                va='center', ha='center', color="white", fontsize=9)
+
+    ax.set_yticks(range(len(activities)))
+    ax.set_yticklabels([a[0] for a in activities])
+    ax.set_xlabel("Days")
+    ax.set_title("Pipeline Project High-Level Schedule")
+    ax.set_xlim(0, total_days + 5)
+    ax.invert_yaxis()
+    plt.tight_layout()
+    plt.show() 
+    
+"""
+
+if __name__ == "__main__":
+    # ✅ User inputs here
+    pipeline_length_km = float(input("Enter pipeline length (km): "))
+    pipe_size_inch = float(input("Enter pipe size (inches): "))
+    road_crossings = int(input("Enter number of road crossings: "))
+    civil_supports = int(input("Enter number of civil supports: "))
+    tie_ins = int(input("Enter number of tie-ins: "))
+    shutdowns = int(input("Enter number of shutdowns: "))
+    
+    total, activities = estimate_pipeline_schedule(
+        pipeline_length_km, pipe_size_inch, road_crossings, civil_supports, tie_ins, shutdowns)
+
+#Printing results
+    print("\nEstimated Project Duration:", total, "days")
+    print("\nActivities Breakdown:")
+    for act in activities:
+        print(f"- {act[0]}: {act[3]:.1f} days (Day {act[1]:.1f} to {act[2]:.1f})")
+
+    # Plot chart
+    #plot_gantt_chart(activities, total)
