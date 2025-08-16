@@ -11,7 +11,11 @@ Project Definition:
 This project/code aims to develop a high level schedule for pipeline projects.
 It can be achieived by asking the user to provide certain inputs, which will be processed by the code and calculate an approximate schedule.
 The data sources are predefined productivity and user inputs of project parameters
-Required algorithm can be explained as: 1) Taking inputs from the user 2)Transforming the data by code process 3) Predicting an approximate schedule 
+
+Required algorithm can be explained as: 
+1) Taking inputs from the user
+2) Transforming the data by code process
+3) Predicting an approximate schedule 
 
 Deliverables:
 
